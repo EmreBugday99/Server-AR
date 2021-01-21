@@ -3,6 +3,9 @@
     public enum GamePackets : byte
     {
         SpawnPlayer = 0,
-        SyncPlayer
+        SyncPlayer,
+        ChangePosition,
+        Attack,
+        UpdateHealth
     }
 }

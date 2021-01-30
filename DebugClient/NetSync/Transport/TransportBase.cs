@@ -8,15 +8,19 @@ namespace NetSync.Transport
         #region Client
 
         public delegate void ClientConnected();
+
         public event ClientConnected OnClientConnected;
 
         public delegate void ClientDataReceived(Packet packet, PacketHeader packetHeader);
+
         public event ClientDataReceived OnClientDataReceived;
 
         public delegate void ClientDisconnected();
+
         public event ClientDisconnected OnClientDisconnected;
 
         public delegate void ClientError(string description);
+
         public event ClientError OnClientError;
 
         public abstract void ClientConnect(NetworkClient client);
@@ -42,21 +46,27 @@ namespace NetSync.Transport
         #region Server
 
         public delegate void ServerStarted(NetworkServer server);
+
         public event ServerStarted OnServerStarted;
 
         public delegate void ServerConnected(Connection connection);
+
         public event ServerConnected OnServerConnected;
 
         public delegate void ServerDataReceived(Connection connection, Packet packet, PacketHeader packetHeader);
+
         public event ServerDataReceived OnServerDataReceived;
 
         public delegate void ServerDisconnected(Connection connection);
+
         public event ServerDisconnected OnServerDisconnected;
 
         public delegate void ServerStopped(NetworkServer server);
+
         public event ServerStopped OnServerStopped;
 
         public delegate void ServerError(string description);
+
         public event ServerError OnServerError;
 
         public abstract void ServerStart(NetworkServer server);

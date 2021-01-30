@@ -6,6 +6,8 @@
         SyncPlayer,
         ChangePosition,
         Attack,
-        UpdateHealth
+        UpdateHealth,
+        LockGrid,
+        Disconnect
     }
 }

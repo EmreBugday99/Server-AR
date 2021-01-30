@@ -19,30 +19,35 @@ namespace NetSync.Client
         private Dictionary<PacketHeader, ClientHandle> ReceiveHandlers = new Dictionary<PacketHeader, ClientHandle>();
 
         private List<ClientQueueHandle> _clientQueueHandlers = new List<ClientQueueHandle>();
+
         //To prevent executing the Queue while adding to it at the same time.
         internal object QueueLock = new object();
 
         #region Events
 
         public delegate void NetworkClientConnected();
+
         /// <summary>
         /// Called after client establishes connection with server.
         /// </summary>
         public event NetworkClientConnected OnClientConnected;
 
         public delegate void NetworkClientDisconnected();
+
         /// <summary>
         /// Called after Client disconnects from server.
         /// </summary>
         public event NetworkClientDisconnected OnClientDisconnected;
 
         public delegate void NetworkClientError(string description);
+
         /// <summary>
         /// Called after the Transport throws an error.
         /// </summary>
         public event NetworkClientError OnClientErrorDetected;
 
         public delegate void NetworkClientHandshakeCompleted(ushort connectionId);
+
         /// <summary>
         /// Called after client successfully finishes the handshake with server.
         /// </summary>

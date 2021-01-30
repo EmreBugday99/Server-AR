@@ -1,5 +1,6 @@
 ﻿using NetSync;
 using NetSync.Server;
+using NetSync.Transport.AsyncTcp;
 using ServerAR.MainNetwork;
 using System;
 using System.Collections.Generic;
@@ -18,9 +19,12 @@ namespace ServerAR.GameNetwork
 
         public Dictionary<ushort, Player> Players = new Dictionary<ushort, Player>();
 
-        public GameServer(NetworkServer networkServer, bool isPublic, Connection hostConnection)
+        public GameServer(bool isPublic, Connection hostConnection)
         {
-            NetServer = networkServer;
+            Console.WriteLine("Creating game server...");
+            AsyncTcp newTransport = new AsyncTcp();
+            NetServer = new NetworkServer(0, 2, 4095, newTransport);
+
             IsPublic = isPublic;
             HostConnection = hostConnection;
 
@@ -73,7 +77,7 @@ namespace ServerAR.GameNetwork
 
         private void OnConnect(Connection connection)
         {
-            Console.WriteLine($"A new player has connected to GameServer[{MatchId}]");
+            Console.WriteLine($"A new player[{connection.ConnectionId}] has connected to GameServer[{MatchId}]");
 
             Player newPlayer = new Player(connection, Game, this, NetServer);
             Players.Add(connection.ConnectionId, newPlayer);

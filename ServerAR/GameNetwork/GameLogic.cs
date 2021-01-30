@@ -1,7 +1,5 @@
-﻿using System;
-using NetSync;
+﻿using NetSync;
 using NetSync.Server;
-using System.Numerics;
 
 namespace ServerAR.GameNetwork
 {
@@ -10,7 +8,7 @@ namespace ServerAR.GameNetwork
         private NetworkServer _netServer;
         private GameServer _gameServer;
 
-        private static float _attackDistance = 2.0f;
+        private static float _attackDistance = 0.02f;
 
         public GameLogic(NetworkServer networkServer, GameServer gameServer)
         {
@@ -22,6 +20,7 @@ namespace ServerAR.GameNetwork
         {
             _netServer.RegisterHandler((byte)GamePackets.ChangePosition, ChangePositionHandler);
             _netServer.RegisterHandler((byte)GamePackets.Attack, AttackHandler);
+            _netServer.RegisterHandler((byte)GamePackets.LockGrid, LockGridHandler);
         }
 
         private void AttackHandler(Connection connection, Packet packet)
@@ -30,15 +29,23 @@ namespace ServerAR.GameNetwork
             Player attacked = _gameServer.Players[packet.ReadUnsignedShort()];
 
             if (attacker.Health <= 0) return;
-            if (Vector3.Distance(attacker.Position, attacked.Position) >= _attackDistance) return;
-            //if((DateTime.Now - attacker.LastAttackTime).Seconds < 1.0f) return;
 
-            attacked.TakeDamage(25);
+            attacked.TakeDamage(25, attacker, attacked);
         }
 
         private void ChangePositionHandler(Connection connection, Packet packet)
         {
-            _gameServer.Players[connection.ConnectionId].SendPositionUpdate(packet);
+            _gameServer.Players[connection.ConnectionId].SendPositionUpdate(packet, connection.ConnectionId);
+        }
+
+        private void LockGridHandler(Connection connection, Packet packet)
+        {
+            ushort gridId = packet.ReadUnsignedShort();
+
+            Packet lockPacket = new Packet();
+            lockPacket.WriteUnsignedShort(gridId);
+
+            _netServer.NetworkSendEveryone((byte)GamePackets.LockGrid, lockPacket);
         }
 
         public void OnPlayerConnect(Player player)

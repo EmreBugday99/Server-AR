@@ -57,6 +57,7 @@ namespace NetSync.Transport.AsyncTcp
             _netStream = _tcpClient.GetStream();
             _netStream.BeginRead(_receiveBuffer, 0, _bufferSize, ReceiveCallback, null);
             OnClientConnect();
+            Console.WriteLine($"asyncTcp {_tcpClient.Client.RemoteEndPoint}");
         }
 
         private void ReceiveCallback(IAsyncResult result)

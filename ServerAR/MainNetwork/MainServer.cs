@@ -21,13 +21,27 @@ namespace ServerAR.MainNetwork
         private void InitializeServer()
         {
             NetServer.OnServerStarted += OnServerStart;
+            NetServer.OnServerConnected += OnPlayerConnect;
             NetServer.RegisterHandler((byte)MainPackets.CreateMatch, CreateMatchHandler);
+            NetServer.RegisterHandler((byte)MainPackets.JoinMatch, JoinMatchHandler);
+        }
+
+        private void OnPlayerConnect(Connection connection)
+        {
+            Console.WriteLine("Player has connected to the server...");
         }
 
         private void CreateMatchHandler(Connection connection, Packet packet)
         {
             bool isPublic = packet.ReadBool();
             MatchMaker.CreateGameServer(connection, isPublic);
+        }
+
+        private void JoinMatchHandler(Connection connection, Packet packet)
+        {
+            int matchId = packet.ReadInteger();
+
+            MatchMaker.JoinGameServer(connection, matchId);
         }
 
         public void Start()

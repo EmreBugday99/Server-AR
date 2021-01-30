@@ -1,6 +1,6 @@
-﻿using System;
-using NetSync;
+﻿using NetSync;
 using NetSync.Server;
+using System;
 using System.Numerics;
 
 namespace ServerAR.GameNetwork
@@ -39,19 +39,18 @@ namespace ServerAR.GameNetwork
             // To prevent uninitialized data.
             LastAttackTime = DateTime.Now;
         }
+
         public void SyncPlayer()
         {
             // Game state synchronization for the newly joined player.
             for (ushort i = 0; i < _gameServer.Players.Count; i++)
             {
                 Player player = _gameServer.Players[i];
+                if (Id == player.Id) continue;
 
                 Packet syncPacket = new Packet();
-                syncPacket.WriteByte(Health);
-                syncPacket.WriteUnsignedShort(Id);
-                syncPacket.WriteFloat(Position.X);
-                syncPacket.WriteFloat(Position.Y);
-                syncPacket.WriteFloat(Position.Z);
+                syncPacket.WriteUnsignedShort(player.Id);
+                syncPacket.WriteByte(player.Health);
 
                 _netServer.NetworkSend(PlayerConnection, (byte)GamePackets.SyncPlayer, syncPacket);
             }
@@ -60,30 +59,24 @@ namespace ServerAR.GameNetwork
         public void SpawnPlayer()
         {
             Packet spawnPacket = new Packet();
+            spawnPacket.WriteUnsignedShort(PlayerConnection.ConnectionId);
             spawnPacket.WriteByte(Health);
-            spawnPacket.WriteUnsignedShort(Id);
-            spawnPacket.WriteFloat(Position.X);
-            spawnPacket.WriteFloat(Position.Y);
-            spawnPacket.WriteFloat(Position.Z);
 
             _netServer.NetworkSendEveryone((byte)GamePackets.SpawnPlayer, spawnPacket);
         }
 
-        public void SendPositionUpdate(Packet packet)
+        public void SendPositionUpdate(Packet packet, ushort id)
         {
-            Position.X = packet.ReadFloat();
-            Position.Y = packet.ReadFloat();
-            Position.Z = packet.ReadFloat();
+            ushort gridId = packet.ReadUnsignedShort();
 
             Packet positionPacket = new Packet();
-            positionPacket.WriteFloat(Position.X);
-            positionPacket.WriteFloat(Position.Y);
-            positionPacket.WriteFloat(Position.Z);
+            positionPacket.WriteUnsignedShort(id);
+            positionPacket.WriteUnsignedInteger(gridId);
 
             _netServer.NetworkSendEveryone((byte)GamePackets.ChangePosition, positionPacket);
         }
 
-        public void TakeDamage(byte damageAmount)
+        public void TakeDamage(byte damageAmount, Player attacker, Player attacked)
         {
             Health -= damageAmount;
 
@@ -95,7 +88,6 @@ namespace ServerAR.GameNetwork
 
             if (Health <= 0)
             {
-                //TODO: Kill the mother fucker
                 Console.WriteLine("Mother fucker is dead");
             }
         }

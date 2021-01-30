@@ -1,11 +1,8 @@
-﻿using NetSync.Server;
+﻿using NetSync;
+using NetSync.Server;
 using ServerAR.GameNetwork;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
-using NetSync.Transport.AsyncTcp;
 
 namespace ServerAR.MainNetwork
 {
@@ -15,10 +12,21 @@ namespace ServerAR.MainNetwork
 
         public static void CreateGameServer(Connection connection, bool isPublic)
         {
-            AsyncTcp newTransport = new AsyncTcp();
-            NetworkServer newServer = new NetworkServer(0, 2, 4095, newTransport);
+            GameServer gameServer = new GameServer(isPublic, connection);
+        }
 
-            GameServer gameServer = new GameServer(newServer, isPublic, connection);
+        public static void JoinGameServer(Connection connection, int matchId)
+        {
+            if (GameServers.ContainsKey(matchId) == false)
+            {
+                Console.WriteLine($"Wrong game server {matchId}");
+                return;
+            }
+
+            Packet joinPacket = new Packet();
+            joinPacket.WriteInteger(matchId);
+
+            MainServer.NetServer.NetworkSend(connection, (byte)MainPackets.JoinMatch, joinPacket);
         }
     }
 }

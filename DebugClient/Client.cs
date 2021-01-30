@@ -1,8 +1,8 @@
-﻿using System;
-using NetSync;
+﻿using NetSync;
 using NetSync.Client;
 using NetSync.Transport.AsyncTcp;
 using ServerAR.MainNetwork;
+using System;
 using System.Threading;
 
 internal class Client
@@ -12,7 +12,7 @@ internal class Client
     internal void Start()
     {
         AsyncTcp transport = new AsyncTcp();
-        client = new NetworkClient("127.0.0.1", 2405, 4095, transport);
+        client = new NetworkClient("206.81.21.21", 2405, 4095, transport);
 
         Initialize();
         client.StartClient();
@@ -33,18 +33,21 @@ internal class Client
         Packet createMatchPacket = new Packet();
         createMatchPacket.WriteBool(true);
         client.NetworkSend((byte)MainPackets.CreateMatch, createMatchPacket);
+
+        //Packet joinMatchPacket = new Packet();
+        //joinMatchPacket.WriteInteger(36673);
+        //client.NetworkSend((byte)MainPackets.JoinMatch, joinMatchPacket);
     }
 
     private void JoinMatchHandler(Packet packet)
     {
+        Console.WriteLine("Join Match Received");
         int port = packet.ReadInteger();
         Console.WriteLine(port);
         AsyncTcp matchTransport = new AsyncTcp();
-        NetworkClient matchClient = new NetworkClient("127.0.0.1", port, 4095, matchTransport);
+        NetworkClient matchClient = new NetworkClient("206.81.21.21", port, 4095, matchTransport);
 
         matchClient.StartClient();
-
-        Thread.Sleep(1000);
         //matchClient.StopClient();
     }
 }

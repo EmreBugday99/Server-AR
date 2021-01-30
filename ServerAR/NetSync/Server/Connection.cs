@@ -1,15 +1,15 @@
-﻿using System;
-
-namespace NetSync.Server
+﻿namespace NetSync.Server
 {
     public class Connection
     {
         public readonly ushort ConnectionId;
+
         /// <summary>
         /// In most cases this will be the connection ip.
         /// Stands for Unique Address Identifier
         /// </summary>
         internal string UAI;
+
         internal bool IsConnected;
         internal bool HandshakeCompleted;
         private readonly NetworkServer _serverInstance;

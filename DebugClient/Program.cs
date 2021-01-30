@@ -1,17 +1,14 @@
-﻿using System;
-
-namespace DebugClient
+﻿namespace DebugClient
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Client client = new Client();
             client.Start();
 
             while (true)
             {
-                
             }
         }
     }

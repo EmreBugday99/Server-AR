@@ -38,36 +38,42 @@ namespace NetSync.Server
         #region Events
 
         public delegate void NetworkServerStarted(NetworkServer server);
+
         /// <summary>
         /// Called after server started.
         /// </summary>
         public event NetworkServerStarted OnServerStarted;
 
         public delegate void NetworkServerConnected(Connection connection);
+
         /// <summary>
         /// Called after server receives establishes a new connection with a client.
         /// </summary>
         public event NetworkServerConnected OnServerConnected;
 
         public delegate void NetworkServerDisconnected(Connection connection);
+
         /// <summary>
         /// Called after server closes a connection with a client.
         /// </summary>
         public event NetworkServerDisconnected OnServerDisconnected;
 
         public delegate void NetworkServerStopped(NetworkServer server);
+
         /// <summary>
         /// Called after server stops.
         /// </summary>
         public event NetworkServerStopped OnServerStopped;
 
         public delegate void NetworkServerError(string description);
+
         /// <summary>
         /// Called after Server throws/detects an error.
         /// </summary>
         public event NetworkServerError OnServerErrorDetected;
 
         public delegate void NetworkServerSuccessfulHandshake(Connection connection);
+
         /// <summary>
         /// Called after server successfully finishes the handshake process with a client.
         /// </summary>
